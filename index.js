@@ -1,6 +1,7 @@
 var path = require('path');
 var util = require('./util/util.js');
 var fs = require('fs');
+var options = {};
 
 var MyConventionResolver = {
     apply: function(compiler) {
@@ -11,7 +12,7 @@ var MyConventionResolver = {
                 var cortex_config=JSON.parse(fs.readFileSync(cortex_json_file));
                 var pkg_path = path.resolve(__dirname, '../../neurons/', request.request.substr(8));
                 var versions = fs.readdirSync(pkg_path);
-                var ver = util.chooseCorrectVersion(cortex_config, versions, pkg_name, false , pkg_path);
+                var ver = util.chooseCorrectVersion(cortex_config, versions, pkg_name, options.noBeta , pkg_path);
                 var newRequest = {
                     path: path.resolve(__dirname, '../..' ),
                     request: 'neurons/' + pkg_name + '/' + ver + '/'+ pkg_name +'.js',
@@ -26,4 +27,9 @@ var MyConventionResolver = {
     }
 };
 
-module.exports = MyConventionResolver;
+function constructor(opt) {
+    options = opt;
+    return MyConventionResolver;
+}
+
+module.exports = constructor;
